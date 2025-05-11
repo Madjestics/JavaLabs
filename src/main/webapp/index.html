@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск слов в файлах</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { padding: 8px 12px; border: 1px solid #ccc; }
+        th { background: #f4f4f4; }
+        a.download { color: #0066cc; text-decoration: none; }
+    </style>
+</head>
+<body>
+<h1>Поиск слова в файлах</h1>
+
+<form id="searchForm">
+    <input type="text" id="queryInput" placeholder="Введите слово" required>
+    <button type="submit">Найти</button>
+</form>
+
+<div id="resultsContainer"></div>
+
+<script>
+    const form = document.getElementById('searchForm');
+    const container = document.getElementById('resultsContainer');
+
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const word = document.getElementById('queryInput').value.trim();
+        if (!word) return;
+        container.innerHTML = '<p>Загрузка...</p>';
+
+        try {
+            const resp = await fetch('search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word })
+            });
+            if (!resp.ok) throw new Error(`Ошибка ${resp.status}`);
+            const results = await resp.json();
+
+            if (results.length === 0) {
+                container.innerHTML = '<p>Ничего не найдено.</p>';
+                return;
+            }
+
+            let html = `
+          <h2>Результаты для «${word}»:</h2>
+          <table>
+            <tr>
+              <th>Файл</th>
+              <th>Слово</th>
+              <th>Вхождений</th>
+              <th>Процент</th>
+            </tr>`;
+            for (const ws of results) {
+                html += `
+            <tr>
+              <td>
+                <a class="download" href="search?downloadFile=${ws.filename}">
+                  ${ws.filename}
+                </a>
+              </td>
+              <td>${ws.word}</td>
+              <td>${ws.count}</td>
+              <td>${ws.percentage.toFixed(2)}%</td>
+            </tr>`;
+            }
+            html += '</table>';
+            container.innerHTML = html;
+
+        } catch (err) {
+            container.innerHTML = `<p style="color:red">Ошибка: ${err.message}</p>`;
+        }
+    });
+</script>
+</body>
+</html>

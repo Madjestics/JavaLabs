@@ -1,6 +1,9 @@
 package org.example.lab1;
 
-import java.io.IOException;
+import org.example.general.WordFrequencyCounter;
+import org.example.general.WordFrequencyResult;
+
+import java.nio.file.Path;
 
 public class WordFrequencyMain {
     public static void main(String[] args) {
@@ -10,18 +13,14 @@ public class WordFrequencyMain {
 
         String wordToCheck = args[0].toLowerCase();
         String filePath = args[1];
-        try {
-            WordFrequencyResult result = WordFrequencyCounter.countWordFrequency(filePath);
-            int totalWords = result.totalWords();
-            int checkedWordCount = result.wordFrequency().getOrDefault(wordToCheck, 0);
-            double frequencyPercentage = (totalWords == 0) ? 0.0 : (checkedWordCount * 100.0 / totalWords);
+        WordFrequencyResult result = WordFrequencyCounter.countWordFrequency(Path.of(filePath));
+        int totalWords = result.totalWords();
+        int checkedWordCount = result.wordFrequency().getOrDefault(wordToCheck, 0);
+        double frequencyPercentage = (totalWords == 0) ? 0.0 : (checkedWordCount * 100.0 / totalWords);
 
-            System.out.println("Общее количество слов: " + totalWords);
-            System.out.println("Частота слова '" + wordToCheck + "': " + checkedWordCount);
-            System.out.printf("Частота в процентах: %.2f%% \n", frequencyPercentage);
-        } catch (IOException e) {
-            System.err.println("Ошибка при чтении файла: " + e.getMessage());
-        }
+        System.out.println("Общее количество слов: " + totalWords);
+        System.out.println("Частота слова '" + wordToCheck + "': " + checkedWordCount);
+        System.out.printf("Частота в процентах: %.2f%% \n", frequencyPercentage);
     }
 }
 
