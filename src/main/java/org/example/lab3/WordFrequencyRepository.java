@@ -99,10 +99,10 @@ public class WordFrequencyRepository {
                 List<WordStatisticInfo> list = new ArrayList<>();
                 while (rs.next()) {
                     list.add(new WordStatisticInfo(
-                            rs.getString("filename"),
-                            rs.getString("word"),
-                            rs.getInt("count"),
-                            rs.getDouble("percentage")
+                            rs.getString(WordStatisticInfo.FILENAME_COLUMN),
+                            rs.getString(WordStatisticInfo.WORD_COLUMN),
+                            rs.getInt(WordStatisticInfo.COUNT_COLUMN),
+                            rs.getDouble(WordStatisticInfo.PERCENTAGE_COLUMN)
                     ));
                 }
                 return list;

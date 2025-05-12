@@ -6,18 +6,19 @@ import org.apache.catalina.startup.Tomcat;
 
 import java.io.File;
 
-public class lab4Main {
+public class Lab4Main {
 
     private final static int PORT = 8080;
     private final static String WEB_PATH = "src/main/webapp";
     private final static String SEARCH_URL = "/search";
+    private final static String CONTEXT_PATH = "";
 
     public static void main(String[] args) throws Exception {
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(PORT);
 
         String webappDir = new File(WEB_PATH).getAbsolutePath();
-        Context ctx = tomcat.addWebapp("", webappDir);
+        Context ctx = tomcat.addWebapp(CONTEXT_PATH, webappDir);
         ctx.setAddWebinfClassesResources(true);
         ctx.addWelcomeFile("index.html");
 
